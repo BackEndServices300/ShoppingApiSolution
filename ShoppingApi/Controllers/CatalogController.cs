@@ -28,6 +28,23 @@ namespace ShoppingApi.Controllers
             _mapperConfig = mapperConfig;
         }
 
+        [HttpPost("catalog")]
+        public async Task<ActionResult> AddItem([FromBody] PostCatalogRequest newItem)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            } else
+            {
+                // what am I missing?
+                var item = _mapper.Map<ShoppingItem>(newItem);
+                _context.ShoppingItems.Add(item);
+                await _context.SaveChangesAsync();
+                var response = _mapper.Map<GetCatalogResponseSummaryItem>(item);
+                return StatusCode(201, response);
+            }
+        }
+
         [HttpGet("catalog")]
         public async Task<ActionResult> GetFullCatalog()
         {
