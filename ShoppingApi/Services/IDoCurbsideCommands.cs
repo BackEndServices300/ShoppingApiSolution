@@ -4,9 +4,8 @@ using System.Threading.Tasks;
 
 namespace ShoppingApi.Services
 {
-    public interface IDoCurbsideQueries
+    public interface IDoCurbsideCommands
     {
-        Task<GetCurbsideOrdersResponse> GetAll();
-        Task<CurbsideOrder> GetById(int orderId);
+        Task<CurbsideOrder> AddOrder(PostCurbsideOrderRequest orderToPlace);
     }
 }

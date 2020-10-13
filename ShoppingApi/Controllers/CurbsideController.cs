@@ -15,11 +15,28 @@ namespace ShoppingApi.Controllers
     {
 
         private readonly IDoCurbsideQueries _curbsideQueries;
+        private readonly IDoCurbsideCommands _curbsideCommands;
 
-        public CurbsideController(IDoCurbsideQueries curbsideQueries)
+        public CurbsideController(IDoCurbsideQueries curbsideQueries, IDoCurbsideCommands curbsideCommands)
         {
             _curbsideQueries = curbsideQueries;
+            _curbsideCommands = curbsideCommands;
         }
+
+        [HttpPost("curbsideorders")]
+        public async Task<ActionResult> AddAnOrder([FromBody] PostCurbsideOrderRequest orderToPlace)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            } else
+            {
+                CurbsideOrder response = await _curbsideCommands.AddOrder(orderToPlace);
+                // I'll pause here.. for dramatic effect.
+                return CreatedAtRoute("curbside#getbyid", new { orderId = response.Id }, response);
+            }
+        }
+
 
         [HttpGet("curbsideorders")]
         public async Task<ActionResult> GetAllOrders()
@@ -28,7 +45,7 @@ namespace ShoppingApi.Controllers
 
             return Ok(response);
         }
-        [HttpGet("curbsideorders/{orderId:int}")]
+        [HttpGet("curbsideorders/{orderId:int}", Name ="curbside#getbyid")]
         public async Task<ActionResult> GetOrderById(int orderId)
         {
             CurbsideOrder response = await _curbsideQueries.GetById(orderId);

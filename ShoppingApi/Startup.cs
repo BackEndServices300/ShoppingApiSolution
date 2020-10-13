@@ -40,6 +40,7 @@ namespace ShoppingApi
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                 });
+
             services.AddDbContext<ShoppingDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("shopping"))
             );
@@ -63,6 +64,7 @@ namespace ShoppingApi
             services.AddSingleton<IMapper>(mapper);
             services.AddSingleton<MapperConfiguration>(mapperConfig);
             services.AddScoped<IDoCurbsideQueries, EntityFrameworkCurbsideData>();
+            services.AddScoped<IDoCurbsideCommands, EntityFrameworkCurbsideData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
