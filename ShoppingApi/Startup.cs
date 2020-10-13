@@ -55,6 +55,7 @@ namespace ShoppingApi
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton<IMapper>(mapper);
             services.AddSingleton<MapperConfiguration>(mapperConfig);
+            //services.AddSingleton<IServiceCollection>(services); // might be really bad.
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
