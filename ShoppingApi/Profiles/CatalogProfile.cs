@@ -18,7 +18,7 @@ namespace ShoppingApi.Profiles
             // ShoppingItem -> GetCatalogResponseSummaryItem
             CreateMap<ShoppingItem, GetCatalogResponseSummaryItem>()
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => 
-                src.Cost * 1.5M)); // TODO: Fix this.
+                src.Cost * config.markUp)); // TODO: Fix this.
 
             CreateMap<PostCatalogRequest, ShoppingItem>()
                 .ForMember(dest => dest.InInventory, opt => opt.MapFrom(src => true));

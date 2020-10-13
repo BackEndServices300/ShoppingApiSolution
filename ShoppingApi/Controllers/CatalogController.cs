@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using ShoppingApi.Models.Catalog;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.Extensions.Logging;
 
 namespace ShoppingApi.Controllers
 {
@@ -19,13 +20,15 @@ namespace ShoppingApi.Controllers
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _mapperConfig;
+        private readonly ILogger<CatalogController> _logger;
 
-        public CatalogController(ShoppingDataContext context, IConfiguration config, IMapper mapper, MapperConfiguration mapperConfig)
+        public CatalogController(ShoppingDataContext context, IConfiguration config, IMapper mapper, MapperConfiguration mapperConfig, ILogger<CatalogController> logger)
         {
             _context = context;
             _config = config;
             _mapper = mapper;
             _mapperConfig = mapperConfig;
+            _logger = logger;
         }
 
         [HttpPost("catalog")]
@@ -33,6 +36,7 @@ namespace ShoppingApi.Controllers
         {
             if(!ModelState.IsValid)
             {
+                _logger.LogInformation("Got a bad request. Looked like this {@newItem}", newItem);
                 return BadRequest(ModelState);
             } else
             {
@@ -41,6 +45,7 @@ namespace ShoppingApi.Controllers
                 _context.ShoppingItems.Add(item);
                 await _context.SaveChangesAsync();
                 var response = _mapper.Map<GetCatalogResponseSummaryItem>(item);
+                
                 return StatusCode(201, response);
             }
         }
@@ -61,6 +66,7 @@ namespace ShoppingApi.Controllers
                 Data = data
             };
 
+            _logger.LogInformation("Got a get on catalog.");
 
             return Ok(response);
         }

@@ -37,12 +37,19 @@ namespace ShoppingApi
                 options.UseSqlServer(Configuration.GetConnectionString("shopping"))
             );
 
-            //var mapperConfiguration = Configuration.GetValue<ConfigurationForMapper>("Mapper");
-            services.Configure<ConfigurationForMapper>(Configuration.GetSection("Mapper"));
+            ////var mapperConfiguration = Configuration.GetValue<ConfigurationForMapper>("Mapper");
+            //services.Configure<ConfigurationForMapper>(Configuration.GetSection("Mapper"));
+
+            // this is what we are going to use for Automapper...
+            var configForMapper = new ConfigurationForMapper();
+            Configuration.GetSection(configForMapper.SectionName).Bind(configForMapper);
+
+            // This sets up an IOptions<ConfigurationForMapper> that we can inject into other dependencies.
+            services.Configure<ConfigurationForMapper>(Configuration.GetSection(configForMapper.SectionName));
 
             var mapperConfig = new MapperConfiguration(opt =>
             {
-                opt.AddProfile(new CatalogProfile(Configuration.Get<ConfigurationForMapper>()));
+                opt.AddProfile(new CatalogProfile(configForMapper));
             });
 
             IMapper mapper = mapperConfig.CreateMapper();
