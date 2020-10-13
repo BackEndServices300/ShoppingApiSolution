@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ShoppingApi.Domain;
 using ShoppingApi.Models;
 using ShoppingApi.Models.Curbside;
+using ShoppingApi.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,25 +14,31 @@ namespace ShoppingApi.Controllers
     public class CurbsideController : ControllerBase
     {
 
-        private readonly ShoppingDataContext _context;
+        private readonly IDoCurbsideQueries _curbsideQueries;
 
-        public CurbsideController(ShoppingDataContext context)
+        public CurbsideController(IDoCurbsideQueries curbsideQueries)
         {
-            _context = context;
+            _curbsideQueries = curbsideQueries;
         }
 
         [HttpGet("curbsideorders")]
         public async Task<ActionResult> GetAllOrders()
         {
-            var response = new GetCurbsideOrdersResponse();
-            var data = await _context.CurbsideOrders.ToListAsync();
-            response.Data = data;
-            response.NumberOfApprovedOrders = response.Data.Count(o => o.Status == CurbsideOrderStatus.Approved);
-            response.NumberOfDeniedOrders = response.Data.Count(o => o.Status == CurbsideOrderStatus.Denied);
-            response.NumberOfFulfilledOrders = response.Data.Count(o => o.Status == CurbsideOrderStatus.Fulfilled);
-            response.NumberOfPendingOrders = response.Data.Count(o => o.Status == CurbsideOrderStatus.Pending);
+            GetCurbsideOrdersResponse response = await _curbsideQueries.GetAll();
 
             return Ok(response);
+        }
+        [HttpGet("curbsideorders/{orderId:int}")]
+        public async Task<ActionResult> GetOrderById(int orderId)
+        {
+            CurbsideOrder response = await _curbsideQueries.GetById(orderId);
+            if(response == null)
+            {
+                return NotFound();
+            } else
+            {
+                return Ok(response);
+            }
         }
     }
 }
