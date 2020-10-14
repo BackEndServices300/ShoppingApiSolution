@@ -25,6 +25,15 @@ namespace ShoppingApi.Hubs
             _mapper = mapper;
             _channel = channel;
         }
+        public override Task OnConnectedAsync()
+        {
+            
+            return base.OnConnectedAsync();
+        }
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            return base.OnDisconnectedAsync(exception);
+        }
 
         public async Task PlaceOrder(PostCurbsideOrderRequest orderToBePlaced)
         {
