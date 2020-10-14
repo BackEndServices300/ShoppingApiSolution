@@ -9,7 +9,7 @@ using ShoppingApi.Domain;
 namespace ShoppingApi.Migrations
 {
     [DbContext(typeof(ShoppingDataContext))]
-    [Migration("20201012190134_Initial")]
+    [Migration("20201014141435_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,6 +19,27 @@ namespace ShoppingApi.Migrations
                 .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("ShoppingApi.Domain.CurbsideOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("For")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Items")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CurbsideOrders");
+                });
 
             modelBuilder.Entity("ShoppingApi.Domain.ShoppingItem", b =>
                 {
@@ -31,7 +52,8 @@ namespace ShoppingApi.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(300)")
+                        .HasMaxLength(300);
 
                     b.Property<bool>("InInventory")
                         .HasColumnType("bit");

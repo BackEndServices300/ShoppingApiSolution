@@ -2,7 +2,7 @@
 
 namespace ShoppingApi.Migrations
 {
-    public partial class Curbside : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,12 +20,30 @@ namespace ShoppingApi.Migrations
                 {
                     table.PrimaryKey("PK_CurbsideOrders", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "ShoppingItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Description = table.Column<string>(maxLength: 300, nullable: true),
+                    Cost = table.Column<decimal>(nullable: false),
+                    InInventory = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShoppingItems", x => x.Id);
+                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "CurbsideOrders");
+
+            migrationBuilder.DropTable(
+                name: "ShoppingItems");
         }
     }
 }

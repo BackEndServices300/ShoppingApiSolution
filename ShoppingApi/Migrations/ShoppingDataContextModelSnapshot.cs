@@ -50,7 +50,8 @@ namespace ShoppingApi.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(300)")
+                        .HasMaxLength(300);
 
                     b.Property<bool>("InInventory")
                         .HasColumnType("bit");

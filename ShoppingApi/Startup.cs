@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using ShoppingApi.Domain;
+using ShoppingApi.Hubs;
 using ShoppingApi.Profiles;
 using ShoppingApi.Services;
 
@@ -33,7 +34,16 @@ namespace ShoppingApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200");
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyHeader();
+                    builder.AllowCredentials();
+                });
+            });
             services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -66,7 +76,8 @@ namespace ShoppingApi
             services.AddScoped<IDoCurbsideQueries, EntityFrameworkCurbsideData>();
             services.AddScoped<IDoCurbsideCommands, EntityFrameworkCurbsideData>();
             services.AddSingleton<CurbsideChannel>();
-            services.AddHostedService<CurbsideOrderProcessor>();
+            services.AddHostedService<CurbsideOrderProcessor>(); // spin this thing up and get it running right now.
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,7 +87,7 @@ namespace ShoppingApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCors();
             app.UseRouting();
 
             app.UseAuthorization();
@@ -84,6 +95,7 @@ namespace ShoppingApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<CurbsideOrdersHub>("/curbsidehub");
             });
         }
     }

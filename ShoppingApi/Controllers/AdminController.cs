@@ -16,12 +16,12 @@ namespace ShoppingApi.Controllers
         private readonly IServiceCollection services;
         IConfigurationRoot _configRoot;
 
-        public AdminController(IConfiguration config, IOptions<ConfigurationForMapper> options, IServiceCollection services)
+        public AdminController(IConfiguration config, IOptions<ConfigurationForMapper> options/*, IServiceCollection services*/)
         {
            
             _configRoot = (IConfigurationRoot)  config;
             _options = options;
-            this.services = services;
+            //this.services = services;
         }
 
         [HttpGet("admin/config")]

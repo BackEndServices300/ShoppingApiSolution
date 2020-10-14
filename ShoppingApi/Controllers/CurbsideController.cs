@@ -23,7 +23,7 @@ namespace ShoppingApi.Controllers
             _curbsideCommands = curbsideCommands;
         }
 
-        [HttpPost("curbsideorders")]
+        [HttpPost("curbsideorders/async")]
         public async Task<ActionResult> AddAnOrder([FromBody] PostCurbsideOrderRequest orderToPlace)
         {
             if(!ModelState.IsValid)
@@ -31,7 +31,21 @@ namespace ShoppingApi.Controllers
                 return BadRequest(ModelState);
             } else
             {
-                CurbsideOrder response = await _curbsideCommands.AddOrder(orderToPlace);
+                CurbsideOrder response = await _curbsideCommands.AddOrder(orderToPlace,true);
+                // I'll pause here.. for dramatic effect.
+                return CreatedAtRoute("curbside#getbyid", new { orderId = response.Id }, response);
+            }
+        }
+        [HttpPost("curbsideorders/sync")]
+        public async Task<ActionResult> AddAnOrderSync([FromBody] PostCurbsideOrderRequest orderToPlace)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            else
+            {
+                CurbsideOrder response = await _curbsideCommands.AddOrder(orderToPlace, false);
                 // I'll pause here.. for dramatic effect.
                 return CreatedAtRoute("curbside#getbyid", new { orderId = response.Id }, response);
             }

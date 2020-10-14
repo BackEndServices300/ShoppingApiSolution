@@ -16,5 +16,11 @@ namespace ShoppingApi.Domain
         public DbSet<ShoppingItem> ShoppingItems { get; set; }
 
         public DbSet<CurbsideOrder> CurbsideOrders { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ShoppingItem>().Property(p => p.Description)
+                 .HasMaxLength(300);
+        }
     }
 }
